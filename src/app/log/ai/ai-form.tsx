@@ -2,7 +2,7 @@
 
 import { useRef, useState } from 'react'
 import { useRouter } from 'next/navigation'
-import { analyzeFood, logAiItems, type AiItem } from '@/app/actions'
+import { logAiItems, type AiItem } from '@/app/actions'
 
 const MEALS = [
   { value: 'desayuno', label: 'Desayuno' },
@@ -44,7 +44,8 @@ export default function AiForm({ today }: { today: string }) {
     for (const img of images) fd.append('images', img)
 
     try {
-      const result = await analyzeFood(fd)
+      const res = await fetch('/api/analyze', { method: 'POST', body: fd })
+      const result = await res.json()
       if (result.error) {
         setError(result.error)
       } else {
