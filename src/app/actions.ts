@@ -120,19 +120,19 @@ export async function analyzeFood(formData: FormData): Promise<{ items: AiItem[]
   const { default: Anthropic } = await import('@anthropic-ai/sdk')
   const client = new Anthropic({ apiKey })
 
-  type ContentBlock =
-    | { type: 'text'; text: string }
-    | { type: 'image'; source: { type: 'base64'; media_type: 'image/jpeg' | 'image/png' | 'image/gif' | 'image/webp'; data: string } }
+  type ImageMediaType = 'image/jpeg' | 'image/png' | 'image/gif' | 'image/webp'
 
-  const content: ContentBlock[] = []
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  const content: any[] = []
 
   for (const file of imageFiles) {
     if (!file.size) continue
     const buffer = await file.arrayBuffer()
     const base64 = Buffer.from(buffer).toString('base64')
+    const mediaType = (file.type as ImageMediaType) || ('image/jpeg' as ImageMediaType)
     content.push({
-      type: 'image',
-      source: { type: 'base64', media_type: file.type as 'image/jpeg', data: base64 },
+      type: 'image' as const,
+      source: { type: 'base64' as const, media_type: mediaType, data: base64 },
     })
   }
 
