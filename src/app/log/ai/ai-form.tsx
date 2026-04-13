@@ -23,6 +23,7 @@ export default function AiForm({ today }: { today: string }) {
   const [meal, setMeal] = useState('desayuno')
   const [done, setDone] = useState(false)
   const fileRef = useRef<HTMLInputElement>(null)
+  const cameraRef = useRef<HTMLInputElement>(null)
 
   function handleImageChange(e: React.ChangeEvent<HTMLInputElement>) {
     const files = Array.from(e.target.files ?? [])
@@ -67,6 +68,7 @@ export default function AiForm({ today }: { today: string }) {
     setImages([])
     setPreviews([])
     if (fileRef.current) fileRef.current.value = ''
+    if (cameraRef.current) cameraRef.current.value = ''
   }
 
   const inputCls = 'w-full border border-zinc-200 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-zinc-300'
@@ -76,17 +78,41 @@ export default function AiForm({ today }: { today: string }) {
       {/* Input form */}
       <form onSubmit={handleAnalyze} className="space-y-4">
         <div>
-          <label className="text-xs text-zinc-700 mb-1.5 block">
-            Foto(s) — cámara o galería
-          </label>
+          <label className="text-xs text-zinc-700 mb-1.5 block">Foto(s)</label>
+          <div className="flex gap-2">
+            <button
+              type="button"
+              onClick={() => cameraRef.current?.click()}
+              className="flex-1 flex items-center justify-center gap-2 border border-zinc-200 rounded-lg py-2 text-sm text-zinc-700 bg-zinc-50 hover:bg-zinc-100 transition-colors"
+            >
+              📷 Cámara
+            </button>
+            <button
+              type="button"
+              onClick={() => fileRef.current?.click()}
+              className="flex-1 flex items-center justify-center gap-2 border border-zinc-200 rounded-lg py-2 text-sm text-zinc-700 bg-zinc-50 hover:bg-zinc-100 transition-colors"
+            >
+              🖼️ Galería
+            </button>
+          </div>
+          {/* Input para cámara */}
           <input
-            ref={fileRef}
+            ref={cameraRef}
             type="file"
             accept="image/*"
             multiple
             capture="environment"
             onChange={handleImageChange}
-            className="w-full text-sm text-zinc-600 file:mr-3 file:py-1.5 file:px-3 file:rounded-lg file:border-0 file:text-sm file:font-medium file:bg-zinc-100 file:text-zinc-700 hover:file:bg-zinc-200 cursor-pointer"
+            className="hidden"
+          />
+          {/* Input para galería */}
+          <input
+            ref={fileRef}
+            type="file"
+            accept="image/*"
+            multiple
+            onChange={handleImageChange}
+            className="hidden"
           />
           {previews.length > 0 && (
             <div className="flex gap-2 mt-2 flex-wrap">
