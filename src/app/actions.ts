@@ -122,7 +122,7 @@ export async function analyzeFood(formData: FormData): Promise<{ items: AiItem[]
 
   type ContentBlock =
     | { type: 'text'; text: string }
-    | { type: 'image'; source: { type: 'base64'; media_type: string; data: string } }
+    | { type: 'image'; source: { type: 'base64'; media_type: 'image/jpeg' | 'image/png' | 'image/gif' | 'image/webp'; data: string } }
 
   const content: ContentBlock[] = []
 
