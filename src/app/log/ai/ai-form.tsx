@@ -43,13 +43,17 @@ export default function AiForm({ today }: { today: string }) {
     fd.set('text', text)
     for (const img of images) fd.append('images', img)
 
-    const result = await analyzeFood(fd)
-    setAnalyzing(false)
-
-    if (result.error) {
-      setError(result.error)
-    } else {
-      setItems(result.items)
+    try {
+      const result = await analyzeFood(fd)
+      if (result.error) {
+        setError(result.error)
+      } else {
+        setItems(result.items)
+      }
+    } catch (e) {
+      setError(e instanceof Error ? e.message : 'Error inesperado')
+    } finally {
+      setAnalyzing(false)
     }
   }
 

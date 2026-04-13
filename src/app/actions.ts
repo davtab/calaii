@@ -117,26 +117,27 @@ export async function analyzeFood(formData: FormData): Promise<{ items: AiItem[]
 
   if (!text && imageFiles.length === 0) return { items: [], error: 'Ingresa texto o una imagen' }
 
-  const { default: Anthropic } = await import('@anthropic-ai/sdk')
-  const client = new Anthropic({ apiKey })
+  try {
+    const { default: Anthropic } = await import('@anthropic-ai/sdk')
+    const client = new Anthropic({ apiKey })
 
-  type ImageMediaType = 'image/jpeg' | 'image/png' | 'image/gif' | 'image/webp'
+    type ImageMediaType = 'image/jpeg' | 'image/png' | 'image/gif' | 'image/webp'
 
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  const content: any[] = []
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    const content: any[] = []
 
-  for (const file of imageFiles) {
-    if (!file.size) continue
-    const buffer = await file.arrayBuffer()
-    const base64 = Buffer.from(buffer).toString('base64')
-    const mediaType = (file.type as ImageMediaType) || ('image/jpeg' as ImageMediaType)
-    content.push({
-      type: 'image' as const,
-      source: { type: 'base64' as const, media_type: mediaType, data: base64 },
-    })
-  }
+    for (const file of imageFiles) {
+      if (!file.size) continue
+      const buffer = await file.arrayBuffer()
+      const base64 = Buffer.from(buffer).toString('base64')
+      const mediaType = (file.type as ImageMediaType) || ('image/jpeg' as ImageMediaType)
+      content.push({
+        type: 'image' as const,
+        source: { type: 'base64' as const, media_type: mediaType, data: base64 },
+      })
+    }
 
-  const prompt = `Analiza los alimentos${text ? ` descritos: "${text}"` : ' en la imagen'}.
+    const prompt = `Analiza los alimentos${text ? ` descritos: "${text}"` : ' en la imagen'}.
 
 Para cada alimento identificado, estima los valores nutricionales de la PORCIÓN TOTAL que se ve/describe.
 
@@ -156,9 +157,8 @@ Responde SOLO con JSON válido, sin texto adicional:
 
 Sé realista con las porciones. Usa valores de bases nutricionales estándar.`
 
-  content.push({ type: 'text', text: prompt })
+    content.push({ type: 'text', text: prompt })
 
-  try {
     const response = await client.messages.create({
       model: 'claude-opus-4-6',
       max_tokens: 1024,
@@ -172,7 +172,8 @@ Sé realista con las porciones. Usa valores de bases nutricionales estándar.`
     const parsed = JSON.parse(jsonMatch[0])
     return { items: parsed.items ?? [] }
   } catch (e) {
-    return { items: [], error: 'Error al contactar la IA' }
+    const msg = e instanceof Error ? e.message : 'Error desconocido'
+    return { items: [], error: `Error al contactar la IA: ${msg}` }
   }
 }
 
