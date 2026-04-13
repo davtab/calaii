@@ -55,6 +55,18 @@ export default function AddEntryForm({ foods, date }: { foods: Food[]; date: str
         </div>
       </div>
 
+      <div>
+        <label className={labelCls}>Gramos <span className="font-normal text-zinc-400">(opcional, por defecto 1)</span></label>
+        <input
+          type="number"
+          name="grams"
+          min="0.1"
+          step="any"
+          placeholder="1"
+          className={inputCls}
+        />
+      </div>
+
       <button type="submit" disabled={pending}
         className="w-full bg-violet-600 text-white rounded-lg py-2.5 text-sm font-bold hover:bg-violet-700 disabled:opacity-50 transition-colors">
         {pending ? 'Agregando...' : 'Agregar entrada'}
