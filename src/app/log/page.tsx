@@ -1,11 +1,11 @@
 import { db } from '@/db'
 import { foods, logEntries } from '@/db/schema'
 import { eq } from 'drizzle-orm'
-import { deleteLogEntry } from '@/app/actions'
 import AddEntryForm from './add-entry-form'
 import DateNav from './date-nav'
 import LogTabs from './log-tabs'
 import AiForm from './ai/ai-form'
+import EditEntryForm from './edit-entry-form'
 
 const MEALS = ['desayuno', 'comida', 'merienda', 'cena'] as const
 const MEAL_LABELS: Record<string, string> = {
@@ -86,18 +86,16 @@ export default async function LogPage({
               <div className="divide-y divide-zinc-100">
                 {mealEntries.map((e) => {
                   const f = e.grams / 100
+                  const macroLine = `${e.grams}g · ${Math.round(e.calories * f)} kcal · P ${Math.round(e.protein * f)}g · C ${Math.round(e.carbs * f)}g · G ${Math.round(e.fat * f)}g`
                   return (
-                    <div key={e.id} className="px-4 py-3 flex items-center justify-between gap-4">
-                      <div className="min-w-0">
-                        <div className="font-semibold text-sm truncate">{e.foodName}</div>
-                        <div className="text-xs text-zinc-700 mt-0.5 tabular-nums">
-                          {e.grams}g · {Math.round(e.calories * f)} kcal · P {Math.round(e.protein * f)}g · C {Math.round(e.carbs * f)}g · G {Math.round(e.fat * f)}g
-                        </div>
-                      </div>
-                      <form action={deleteLogEntry.bind(null, e.id)}>
-                        <button type="submit" className="text-zinc-300 hover:text-rose-500 transition-colors text-xl leading-none flex-shrink-0">×</button>
-                      </form>
-                    </div>
+                    <EditEntryForm
+                      key={e.id}
+                      id={e.id}
+                      foodName={e.foodName}
+                      grams={e.grams}
+                      meal={e.meal}
+                      macroLine={macroLine}
+                    />
                   )
                 })}
               </div>

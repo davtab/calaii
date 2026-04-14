@@ -50,6 +50,13 @@ export async function deleteLogEntry(id: number) {
   revalidatePath('/')
 }
 
+export async function updateLogEntry(id: number, grams: number, meal: string) {
+  if (isNaN(grams) || grams <= 0 || !meal) return
+  await db.update(logEntries).set({ grams, meal }).where(eq(logEntries.id, id))
+  revalidatePath('/log')
+  revalidatePath('/')
+}
+
 // ─── Combos ───────────────────────────────────────────────────────────────────
 
 export async function createCombo(name: string, items: { foodId: number; grams: number }[]) {
