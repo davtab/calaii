@@ -35,9 +35,9 @@ export async function addLogEntry(formData: FormData) {
   const date = formData.get('date') as string
   const meal = formData.get('meal') as string
   const gramsRaw = parseFloat(formData.get('grams') as string)
-  const grams = isNaN(gramsRaw) || gramsRaw <= 0 ? 1 : gramsRaw
 
-  if (isNaN(foodId) || !date || !meal) return
+  if (isNaN(foodId) || !date || !meal || isNaN(gramsRaw) || gramsRaw <= 0) return
+  const grams = gramsRaw
 
   await db.insert(logEntries).values({ foodId, date, meal, grams })
   revalidatePath('/log')

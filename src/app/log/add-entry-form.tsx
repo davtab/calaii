@@ -56,13 +56,14 @@ export default function AddEntryForm({ foods, date }: { foods: Food[]; date: str
       </div>
 
       <div>
-        <label className={labelCls}>Gramos <span className="font-normal text-zinc-400">(opcional, por defecto 1)</span></label>
+        <label className={labelCls}>Gramos</label>
         <input
           type="number"
           name="grams"
           min="0.1"
           step="any"
-          placeholder="1"
+          placeholder="ej. 150"
+          required
           className={inputCls}
         />
       </div>
