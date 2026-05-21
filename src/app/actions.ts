@@ -1,7 +1,7 @@
 'use server'
 
 import { db } from '@/db'
-import { foods, logEntries, goals, combos, comboItems } from '@/db/schema'
+import { foods, logEntries, goals, combos, comboItems, studyTests, studyHours } from '@/db/schema'
 import { eq, sql } from 'drizzle-orm'
 import { revalidatePath } from 'next/cache'
 
@@ -102,6 +102,20 @@ export async function updateGoals(formData: FormData) {
   }
   revalidatePath('/')
   revalidatePath('/goals')
+}
+
+// ─── Study tracker ────────────────────────────────────────────────────────────
+
+export async function addStudyTest(score: number) {
+  if (isNaN(score) || score < 0 || score > 100) return
+  await db.insert(studyTests).values({ score })
+  revalidatePath('/')
+}
+
+export async function addStudyTime(minutes: number) {
+  if (![30, 60].includes(minutes)) return
+  await db.insert(studyHours).values({ minutes })
+  revalidatePath('/')
 }
 
 // ─── AI food analysis ─────────────────────────────────────────────────────────

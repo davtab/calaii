@@ -2,6 +2,7 @@ import { db } from '@/db'
 import { foods, logEntries, goals } from '@/db/schema'
 import { eq } from 'drizzle-orm'
 import Link from 'next/link'
+import StudySection from './study-section'
 
 function getToday() {
   return new Date().toISOString().split('T')[0]
@@ -76,6 +77,8 @@ export default async function DashboardPage() {
 
   return (
     <main className="max-w-2xl mx-auto px-4 py-8">
+      <StudySection />
+
       <div className="flex items-start justify-between mb-6">
         <div>
           <h1 className="text-2xl font-bold capitalize">{dateStr}</h1>

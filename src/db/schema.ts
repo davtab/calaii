@@ -46,3 +46,15 @@ export const goals = pgTable('goals', {
   carbs: real('carbs').notNull(),
   fat: real('fat').notNull(),
 })
+
+export const studyTests = pgTable('study_tests', {
+  id: serial('id').primaryKey(),
+  score: real('score').notNull(),
+  createdAt: timestamp('created_at').defaultNow().notNull(),
+})
+
+export const studyHours = pgTable('study_hours', {
+  id: serial('id').primaryKey(),
+  minutes: integer('minutes').notNull(),
+  createdAt: timestamp('created_at').defaultNow().notNull(),
+})
