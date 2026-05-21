@@ -118,6 +118,17 @@ export async function addStudyTime(minutes: number) {
   revalidatePath('/')
 }
 
+export async function deleteLastStudyTest() {
+  const last = await db
+    .select({ id: studyTests.id })
+    .from(studyTests)
+    .orderBy(desc(studyTests.createdAt))
+    .limit(1)
+  if (last.length === 0) return
+  await db.delete(studyTests).where(eq(studyTests.id, last[0].id))
+  revalidatePath('/')
+}
+
 export async function deleteLastStudyTime() {
   const last = await db
     .select({ id: studyHours.id })

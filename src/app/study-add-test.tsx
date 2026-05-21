@@ -1,7 +1,7 @@
 'use client'
 
 import { useState, useTransition } from 'react'
-import { addStudyTest } from '@/app/actions'
+import { addStudyTest, deleteLastStudyTest } from '@/app/actions'
 
 export default function AddTestForm() {
   const [score, setScore] = useState('')
@@ -16,6 +16,13 @@ export default function AddTestForm() {
       await addStudyTest(s)
       setLast(s)
       setScore('')
+    })
+  }
+
+  function undo() {
+    startTransition(async () => {
+      await deleteLastStudyTest()
+      setLast(null)
     })
   }
 
@@ -38,6 +45,15 @@ export default function AddTestForm() {
         className="bg-amber-500 text-white text-sm font-semibold px-4 py-2 rounded-lg hover:bg-amber-600 disabled:opacity-40 transition-colors whitespace-nowrap"
       >
         {pending ? '···' : '+ Test'}
+      </button>
+      <button
+        type="button"
+        onClick={undo}
+        disabled={pending}
+        title="Deshacer último test"
+        className="px-3 py-2 rounded-lg border-2 border-zinc-200 text-zinc-400 text-sm hover:border-zinc-300 hover:text-zinc-600 disabled:opacity-40 transition-colors"
+      >
+        ↩
       </button>
       {last !== null && !pending && (
         <span className="text-xs text-zinc-400 whitespace-nowrap">✓ {last}/100</span>
