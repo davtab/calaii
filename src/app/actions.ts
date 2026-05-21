@@ -2,7 +2,7 @@
 
 import { db } from '@/db'
 import { foods, logEntries, goals, combos, comboItems, studyTests, studyHours } from '@/db/schema'
-import { eq, sql } from 'drizzle-orm'
+import { eq, sql, desc } from 'drizzle-orm'
 import { revalidatePath } from 'next/cache'
 
 // ─── Foods ────────────────────────────────────────────────────────────────────
@@ -115,6 +115,17 @@ export async function addStudyTest(score: number) {
 export async function addStudyTime(minutes: number) {
   if (![30, 60].includes(minutes)) return
   await db.insert(studyHours).values({ minutes })
+  revalidatePath('/')
+}
+
+export async function deleteLastStudyTime() {
+  const last = await db
+    .select({ id: studyHours.id })
+    .from(studyHours)
+    .orderBy(desc(studyHours.createdAt))
+    .limit(1)
+  if (last.length === 0) return
+  await db.delete(studyHours).where(eq(studyHours.id, last[0].id))
   revalidatePath('/')
 }
 
