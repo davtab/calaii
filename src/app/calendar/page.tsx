@@ -3,6 +3,7 @@ import { foods, logEntries, goals } from '@/db/schema'
 import { eq, and, gte, lte } from 'drizzle-orm'
 import Link from 'next/link'
 import CalendarNav from './calendar-nav'
+import NutritionSubNav from '@/app/nutrition-subnav'
 
 type Status = 'goal' | 'under' | 'over' | 'empty'
 
@@ -81,6 +82,7 @@ export default async function CalendarPage({
 
   return (
     <main className="max-w-2xl mx-auto px-4 py-8">
+      <NutritionSubNav />
       <CalendarNav year={year} month={month} />
 
       {/* Calendar grid */}

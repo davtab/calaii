@@ -2,12 +2,14 @@ import { db } from '@/db'
 import { foods } from '@/db/schema'
 import { deleteFood } from '@/app/actions'
 import FoodForm from './food-form'
+import NutritionSubNav from '@/app/nutrition-subnav'
 
 export default async function FoodsPage() {
   const allFoods = await db.select().from(foods).orderBy(foods.name)
 
   return (
     <main className="max-w-2xl mx-auto px-4 py-8">
+      <NutritionSubNav />
       <h1 className="text-2xl font-bold mb-6">Alimentos</h1>
 
       <div className="bg-white rounded-xl border border-zinc-200 p-6 mb-6">

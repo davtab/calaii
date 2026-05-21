@@ -6,7 +6,6 @@ import AddTimeButtons from './study-add-time'
 
 const GOAL_TESTS = 200
 const GOAL_HOURS = 50
-// June 13, 2026 — treated as UTC midnight
 const DEADLINE_MS = Date.UTC(2026, 5, 13)
 
 function Ring({ pct, color }: { pct: number; color: string }) {
@@ -59,7 +58,6 @@ export default async function StudySection() {
   const testsPerDay = daysLeft > 0 ? Math.ceil(testsLeft / daysLeft) : testsLeft
   const hoursPerDay = daysLeft > 0 ? (hoursLeft / daysLeft).toFixed(1) : '0'
 
-  // Last 14 days for daily hours chart
   const hoursMap: Record<string, number> = {}
   for (const row of dailyRaw) hoursMap[String(row.day)] = Number(row.minutes)
   const last14 = Array.from({ length: 14 }, (_, i) => {
@@ -73,39 +71,37 @@ export default async function StudySection() {
   const hasScores = last20Scores.length > 0
   const hasHourChart = last14.some((d) => d.minutes > 0)
 
-  // Motivational message
-  const doneEnough = testPct >= 0.5 && hoursPct >= 0.5
-  const motiveLine = doneEnough
-    ? '¡Vas por buen camino! Sigue así.'
-    : daysLeft <= 7
-    ? '¡Última semana! Todo cuenta.'
-    : `Necesitas ${testsPerDay} tests y ${hoursPerDay}h de estudio al día.`
+  const motiveLine =
+    testPct >= 0.5 && hoursPct >= 0.5
+      ? '¡Vas por buen camino! Sigue así.'
+      : daysLeft <= 7
+      ? '¡Última semana! Todo cuenta.'
+      : `${testsPerDay} tests y ${hoursPerDay}h de estudio al día para llegar.`
 
   return (
-    <section className="mb-8">
-      {/* Header gradient */}
-      <div className="bg-gradient-to-r from-violet-600 to-indigo-600 rounded-2xl p-5 mb-3 text-white shadow-lg">
+    <section>
+      {/* Header */}
+      <div className="bg-gradient-to-br from-amber-400 via-orange-400 to-rose-400 rounded-2xl p-5 mb-3 text-white shadow-lg">
         <div className="flex items-start justify-between gap-4">
           <div className="min-w-0">
-            <p className="text-white/60 text-[11px] font-semibold uppercase tracking-widest mb-0.5">
+            <p className="text-white/70 text-[11px] font-bold uppercase tracking-widest mb-0.5">
               Reto de estudio
             </p>
-            <h2 className="text-xl font-bold leading-tight">Oposición Junio 2026</h2>
-            <p className="text-white/70 text-xs mt-1">{motiveLine}</p>
+            <h2 className="text-2xl font-black leading-tight">Oposición Junio 2026</h2>
+            <p className="text-white/80 text-sm mt-1">{motiveLine}</p>
           </div>
-          <div className="flex-shrink-0 flex flex-col items-center bg-white/20 backdrop-blur-sm rounded-xl px-4 py-2.5">
-            <span className="text-3xl font-bold tabular-nums leading-none">{daysLeft}</span>
-            <span className="text-[11px] text-white/70 mt-0.5">días</span>
+          <div className="flex-shrink-0 flex flex-col items-center bg-white/25 backdrop-blur-sm rounded-xl px-4 py-2.5">
+            <span className="text-3xl font-black tabular-nums leading-none">{daysLeft}</span>
+            <span className="text-[11px] text-white/80 mt-0.5">días</span>
           </div>
         </div>
 
-        {/* Global progress bar */}
         <div className="mt-4">
-          <div className="flex justify-between text-[11px] text-white/60 mb-1">
+          <div className="flex justify-between text-[11px] text-white/70 mb-1">
             <span>Progreso global</span>
             <span>{Math.round(((testPct + hoursPct) / 2) * 100)}%</span>
           </div>
-          <div className="h-1.5 bg-white/20 rounded-full overflow-hidden">
+          <div className="h-2 bg-white/20 rounded-full overflow-hidden">
             <div
               className="h-full bg-white rounded-full transition-all duration-700"
               style={{ width: `${Math.round(((testPct + hoursPct) / 2) * 100)}%` }}
@@ -116,10 +112,9 @@ export default async function StudySection() {
 
       {/* Progress rings */}
       <div className="grid grid-cols-2 gap-3 mb-3">
-        {/* Tests card */}
         <div className="bg-white rounded-xl border border-zinc-200 p-4 flex flex-col items-center">
           <div className="relative mb-1.5">
-            <Ring pct={testPct} color="#7c3aed" />
+            <Ring pct={testPct} color="#f59e0b" />
             <div className="absolute inset-0 flex flex-col items-center justify-center">
               <span className="text-base font-bold tabular-nums leading-none">
                 {Math.round(testPct * 100)}%
@@ -134,14 +129,13 @@ export default async function StudySection() {
             <div className="text-xs text-zinc-700">
               Faltan <strong>{testsLeft}</strong>
             </div>
-            <div className="text-[11px] text-zinc-400">{testsPerDay}/día al ritmo actual</div>
+            <div className="text-[11px] text-zinc-400">{testsPerDay}/día necesarios</div>
           </div>
         </div>
 
-        {/* Hours card */}
         <div className="bg-white rounded-xl border border-zinc-200 p-4 flex flex-col items-center">
           <div className="relative mb-1.5">
-            <Ring pct={hoursPct} color="#4f46e5" />
+            <Ring pct={hoursPct} color="#f97316" />
             <div className="absolute inset-0 flex flex-col items-center justify-center">
               <span className="text-base font-bold tabular-nums leading-none">
                 {Math.round(hoursPct * 100)}%
@@ -156,12 +150,12 @@ export default async function StudySection() {
             <div className="text-xs text-zinc-700">
               Faltan <strong>{hoursLeft.toFixed(1)}h</strong>
             </div>
-            <div className="text-[11px] text-zinc-400">{hoursPerDay}h/día al ritmo actual</div>
+            <div className="text-[11px] text-zinc-400">{hoursPerDay}h/día necesarias</div>
           </div>
         </div>
       </div>
 
-      {/* Charts card — only rendered when there's data */}
+      {/* Charts */}
       {(hasScores || hasHourChart) && (
         <div className="bg-white rounded-xl border border-zinc-200 p-4 mb-3 space-y-4">
           {hasScores && (
@@ -194,7 +188,7 @@ export default async function StudySection() {
                     <div
                       key={i}
                       title={`${s}/100`}
-                      className={`flex-1 rounded-t-sm ${bg} transition-all`}
+                      className={`flex-1 rounded-t-sm ${bg}`}
                       style={{ height: `${h}px` }}
                     />
                   )
@@ -222,9 +216,7 @@ export default async function StudySection() {
                     <div
                       key={d.key}
                       title={`${(d.minutes / 60).toFixed(1)}h`}
-                      className={`flex-1 rounded-t-sm transition-all ${
-                        d.minutes > 0 ? 'bg-indigo-400' : 'bg-zinc-100'
-                      }`}
+                      className={`flex-1 rounded-t-sm ${d.minutes > 0 ? 'bg-orange-400' : 'bg-zinc-100'}`}
                       style={{ height: `${h}px` }}
                     />
                   )
@@ -235,7 +227,7 @@ export default async function StudySection() {
         </div>
       )}
 
-      {/* Action card */}
+      {/* Actions */}
       <div className="bg-white rounded-xl border border-zinc-200 p-4">
         <p className="text-[11px] font-bold text-zinc-400 uppercase tracking-widest mb-3">
           Registrar

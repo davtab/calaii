@@ -6,6 +6,7 @@ import DateNav from './date-nav'
 import LogTabs from './log-tabs'
 import AiForm from './ai/ai-form'
 import EditEntryForm from './edit-entry-form'
+import NutritionSubNav from '@/app/nutrition-subnav'
 
 const MEALS = ['desayuno', 'comida', 'merienda', 'cena'] as const
 const MEAL_LABELS: Record<string, string> = {
@@ -63,6 +64,7 @@ export default async function LogPage({
 
   return (
     <main className="max-w-2xl mx-auto px-4 py-8">
+      <NutritionSubNav />
       <DateNav date={date} />
 
       {entries.length > 0 && (

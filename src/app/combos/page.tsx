@@ -6,6 +6,7 @@ import FoodForm from './food-form'
 import ComboForm from './combo-form'
 import AddComboBtn from './add-combo-btn'
 import ComboTabNav from './tab-nav'
+import NutritionSubNav from '@/app/nutrition-subnav'
 
 export default async function CombosPage({
   searchParams,
@@ -20,6 +21,7 @@ export default async function CombosPage({
   if (tab === 'alimentos') {
     return (
       <main className="max-w-2xl mx-auto px-4 py-8">
+        <NutritionSubNav />
         <h1 className="text-2xl font-bold mb-6">Alimentos</h1>
         <ComboTabNav active="alimentos" />
 
@@ -96,6 +98,7 @@ export default async function CombosPage({
 
   return (
     <main className="max-w-2xl mx-auto px-4 py-8">
+      <NutritionSubNav />
       <h1 className="text-2xl font-bold mb-6">Combos</h1>
       <ComboTabNav active="combos" />
 
