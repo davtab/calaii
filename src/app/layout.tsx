@@ -25,6 +25,12 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
             >
               Alimentación
             </Link>
+            <Link
+              href="/preguntas"
+              className="px-3 py-1.5 rounded-lg text-zinc-400 hover:text-white hover:bg-white/10 transition-colors text-sm font-medium"
+            >
+              Preguntas
+            </Link>
           </div>
         </nav>
         <div className="flex-1">{children}</div>

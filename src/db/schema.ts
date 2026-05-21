@@ -58,3 +58,15 @@ export const studyHours = pgTable('study_hours', {
   minutes: integer('minutes').notNull(),
   createdAt: timestamp('created_at').defaultNow().notNull(),
 })
+
+export const questions = pgTable('questions', {
+  id: serial('id').primaryKey(),
+  question: text('question').notNull(),
+  answer0: text('answer0').notNull(),
+  answer1: text('answer1').notNull(),
+  answer2: text('answer2').notNull(),
+  answer3: text('answer3').notNull(),
+  correctIndex: integer('correct_index').notNull().default(0),
+  category: text('category').notNull().default('General'),
+  createdAt: timestamp('created_at').defaultNow().notNull(),
+})

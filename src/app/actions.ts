@@ -1,7 +1,7 @@
 'use server'
 
 import { db } from '@/db'
-import { foods, logEntries, goals, combos, comboItems, studyTests, studyHours } from '@/db/schema'
+import { foods, logEntries, goals, combos, comboItems, studyTests, studyHours, questions } from '@/db/schema'
 import { eq, sql, desc } from 'drizzle-orm'
 import { revalidatePath } from 'next/cache'
 
@@ -138,6 +138,33 @@ export async function deleteLastStudyTime() {
   if (last.length === 0) return
   await db.delete(studyHours).where(eq(studyHours.id, last[0].id))
   revalidatePath('/')
+}
+
+// ─── Questions ────────────────────────────────────────────────────────────────
+
+export async function saveQuestion(data: {
+  question: string
+  answers: [string, string, string, string]
+  correctIndex: number
+  category: string
+}) {
+  const { question, answers, correctIndex, category } = data
+  if (!question.trim() || answers.some((a) => !a.trim())) return
+  await db.insert(questions).values({
+    question: question.trim(),
+    answer0: answers[0].trim(),
+    answer1: answers[1].trim(),
+    answer2: answers[2].trim(),
+    answer3: answers[3].trim(),
+    correctIndex,
+    category: category.trim() || 'General',
+  })
+  revalidatePath('/preguntas')
+}
+
+export async function deleteQuestion(id: number) {
+  await db.delete(questions).where(eq(questions.id, id))
+  revalidatePath('/preguntas')
 }
 
 // ─── AI food analysis ─────────────────────────────────────────────────────────
